@@ -10,8 +10,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", function (req, res) {
-    fs.readdir(`./files`,function(err,files){         // to read the directory and it content 
-      res.render("index" , {files: files});   // files ka data baj rahah hu 
+    fs.readdir(`./files`,function(err,files){   // to read the directory and it content 
+      res.render("index" , {files: files}); // files ka data baj rahah hu index ejs mai
     })
 });
 
@@ -21,9 +21,19 @@ app.get("/file/:filename" , function(req , res) {
     })
 })
 
+
+app.get("/edit/:filename" , function(req , res) {
+   res.render("edit", {filename:req.params.filename}) 
+});
+
+app.post("/edit" , function(req , res) {
+    fs.rename(`./files/${req.body.previous}` ,`./files/${req.body.newname}`, function(err){
+        res.redirect('/');
+    } )
+}); 
+
 app.post('/create',function(req,res ) {
     fs.writeFile(`./files/${req.body.title.split(' ').join('')}.txt`,req.body.details,function(err){
-
         res.redirect("/")
     })
 });
